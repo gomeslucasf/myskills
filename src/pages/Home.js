@@ -1,8 +1,10 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import {
     Text, 
-    StyleSheet,SafeAreaView,
-    TextInput
+    StyleSheet,
+    View,
+    TextInput,
+    FlatList
 } from 'react-native';
 import { Button } from "../components/Button";
 import { CardSkill } from "../components/CardSkill";
@@ -10,20 +12,31 @@ import { CardSkill } from "../components/CardSkill";
 export function Home()
 {
   const [newSkill,setNewSkill] = useState('');
-  const [mySkills,setMySkills] = useState([]);
+  const [mySkills,setMySkills] = useState(['REACT NATIVE','C#','GIT','ASP.NET','.NET','CORE','REACT','NODEJS']);
+  const [gretting,setGretting] = useState('');
 
   function handleAddNewSkill(){
       if(mySkills.indexOf(newSkill) == -1 )
         setMySkills(oldState=>[...oldState, newSkill]);
-
   }
-  
+  useEffect(()=>{
+    const data = new Date().getHours();
+    if(data < 12 && data > 5)
+    {
+      setGretting('Bom dia');
+    }else if(data >= 12 && data < 18)
+    {
+      setGretting('Boa Tarde');
+    }else{
+      setGretting('Boa Noite');
+    }
+  },[]);
   return (
-    <SafeAreaView
+    <View
     style={styles.container}
     >
       <Text style={styles.title}>
-        Bem Vindo Lucas!
+        {gretting}, Lucas!
       </Text>
       <TextInput
         style={styles.input}
@@ -37,13 +50,16 @@ export function Home()
       >
         My Skills
       </Text>
-     {
-       mySkills.map(skill=>(
-          <CardSkill skill={skill}/>
-       ))      
-     }    
 
-    </SafeAreaView>
+      <FlatList 
+        data={mySkills}
+        keyExtractor={item => item}
+        renderItem={({item})=>(
+          <CardSkill skill={item}/>
+        )}
+      />  
+
+    </View>
   )
 }
 

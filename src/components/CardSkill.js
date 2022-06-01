@@ -8,7 +8,6 @@ import {
 export function CardSkill({skill}){
     return (
         <TouchableOpacity
-        key={skill}
         style={styles.buttonSkill}
         >
           <Text
