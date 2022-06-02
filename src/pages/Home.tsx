@@ -9,16 +9,31 @@ import {
 import { Button } from "../components/Button";
 import { CardSkill } from "../components/CardSkill";
 
+interface modelSkill {
+   id:string;
+   name:string
+}
+
 export function Home()
 {
   const [newSkill,setNewSkill] = useState('');
-  const [mySkills,setMySkills] = useState(['REACT NATIVE','C#','GIT','ASP.NET','.NET','CORE','REACT','NODEJS']);
+  const [mySkills,setMySkills] = useState<modelSkill[]>([]);
   const [gretting,setGretting] = useState('');
 
   function handleAddNewSkill(){
-      if(mySkills.indexOf(newSkill) == -1 )
-        setMySkills(oldState=>[...oldState, newSkill]);
+      const obj = {
+        id : String(new Date().getTime()),
+        name : newSkill.toString()
+      }
+      setMySkills(oldState=>[...oldState, obj]);
   }
+  function handleRemoveSkill(id:string){
+    setMySkills(oldState=>oldState.filter(
+      obj => obj.id !== id
+    ));
+  }
+  
+
   useEffect(()=>{
     const data = new Date().getHours();
     if(data < 12 && data > 5)
@@ -30,6 +45,7 @@ export function Home()
     }else{
       setGretting('Boa Noite');
     }
+
   },[]);
   return (
     <View
@@ -44,7 +60,10 @@ export function Home()
         placeholderTextColor="#555"
         onChangeText={setNewSkill}
       />
-      <Button onPress={handleAddNewSkill}/>
+      <Button 
+        onPress={handleAddNewSkill}
+        title={"Add"}  
+      />
       <Text 
         style={[styles.title,{marginVertical:50}]}
       >
@@ -53,9 +72,11 @@ export function Home()
 
       <FlatList 
         data={mySkills}
-        keyExtractor={item => item}
+        keyExtractor={item => item.id}
         renderItem={({item})=>(
-          <CardSkill skill={item}/>
+          <CardSkill 
+            onPress={() => handleRemoveSkill(item.id)}
+            skill={item.name}/>
         )}
       />  
 
